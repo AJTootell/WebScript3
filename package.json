@@ -2,7 +2,7 @@
   "name": "webscript3",
   "version": "0.1.0",
   "description": "Desktop coursework",
-  "main": "index.js",
+  "main": "server/index.js",
   "dependencies": {
     "express": "^4.14.0"
   },
