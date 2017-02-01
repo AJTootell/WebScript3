@@ -9,7 +9,9 @@ if(process.argv.length == 3){
   util.debugable(process.argv[2])
 }
 
-app.use('/', express.static('webPages', { extensions: ['html'] }));
+app.get('/', function(req,res){
+  res.sendFile("../webPages/index");
+});
 
 
 app.get('/testDB', function(req, res) {
