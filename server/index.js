@@ -9,8 +9,6 @@ if(process.argv.length == 3){
   util.debugable(process.argv[2])
 }
 
-app.listen(8080);
-
 app.use('/', express.static('webPages', { extensions: ['html'] }));
 
 
@@ -52,3 +50,5 @@ else{
     });
   });
 });
+
+app.listen(8080);
