@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Desktop coursework",
   "main": "server/index.js",
+  "start": "server/index.js",
   "dependencies": {
     "express": "^4.14.1",
     "mysql": "^2.13.0"
