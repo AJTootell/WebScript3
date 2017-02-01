@@ -10,7 +10,7 @@ if(process.argv.length == 3){
 }
 
 app.get('/', function(req,res){
-  res.sendFile("../webPages/index");
+  res.sendFile("../webPages/");
 });
 
 
