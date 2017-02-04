@@ -24,10 +24,10 @@ app.get('/', function(req, res) {
       data.forEach(function(row){
         results.push(row);
       });
-      res.render('index', { list: results });
-      sql.end();
+      sqlCon.end();
     }
   });
+  res.render('index', { list: 'results' });
 
 });
 

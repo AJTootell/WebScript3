@@ -8,6 +8,10 @@ if(process.argv.length == 3){
   util.debugable(process.argv[2])
 }
 
+// view engine setup
+//app.set('views', '/views');
+app.set('view engine', 'hbs');
+
 app.use('/', home);
 
 app.listen(8080);
