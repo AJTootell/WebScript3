@@ -4,10 +4,10 @@
 <body>
 <article>
   <ul>
-    {{#each list}}
-      <li id = "{{this.pk_id}}">
-        <h3>{{this.name}} </h3>
-        <p>{{this.description}}</p>
+    {{#each results}}
+      <li id = "{{this.wid_id}}">
+        <h3>{{this.wid_name}} </h3>
+        <p>{{this.wid_description}}</p>
       </li>
     {{/each}}
   </ul>

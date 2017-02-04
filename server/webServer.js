@@ -9,8 +9,10 @@ if(process.argv.length == 3){
 }
 
 // view engine setup
-//app.set('views', '/views');
+app.set('views', './views');
 app.set('view engine', 'hbs');
+
+//app.use()
 
 app.use('/', home);
 
