@@ -1,0 +1,15 @@
+<title>index</title>
+<link rel="stylesheet" href="./styleSheet.css">
+<h1>Header</h1>
+<body>
+<article>
+  <ul>
+    {{#each list}}
+      <li id = "{{this.pk_id}}">
+        <h3>{{this.name}} </h3>
+        <p>{{this.description}}</p>
+      </li>
+    {{/each}}
+  </ul>
+</article>
+</body>
