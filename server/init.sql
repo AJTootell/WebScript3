@@ -8,8 +8,7 @@ create table if not exists template.users (
 create table if not exists template.layout (
   lay_id int not null auto_increment primary key,
   lay_imageBack boolean not null,
-  lay_imageSrc varchar(50),
-  lay_widget int not null
+  lay_imageOrHex varchar(50)
 );
 
 create table if not exists template.widget (
@@ -26,3 +25,6 @@ create table if not exists template.layoutWidget (
   FOREIGN KEY fk_wid(wid_lay_id)
   REFERENCES widget(wid_id)
 );
+
+insert into widget(wid_name, wid_description) values ("Fred","It's a fred");
+insert into widget(wid_name, wid_description) values ("Bob","I'm a bob");
