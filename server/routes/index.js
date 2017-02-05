@@ -8,7 +8,7 @@ config = require('../config.json');
 app.get('/', function(req, res) {
 
   util.debug("getting home page");
-  
+
   util.queryDB('select * from widget', function(results){
     util.debug(results);
     res.render('index', { results: results });
