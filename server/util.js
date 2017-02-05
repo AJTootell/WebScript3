@@ -1,4 +1,7 @@
-var debugging;
+var
+debugging,
+mysql = require('mysql'),
+config = require('./config.json');
 
 //turn on debugging
 function debugable(state){
