@@ -1,10 +1,28 @@
-submit.addEventListener("click",submit)
-
-function submit(){
-  console.log("Getting a new on in there");
+function submitted(){
+  console.log("Getting a new one in there");
   var
-  title = getElementById(newTitle).innerHTML,
-  desc = getElementById(newDesc).innerHTML;
+  name = document.getElementById('newName').textContent,
+  desc = document.getElementById('newDesc').textContent,
+  url = '/insert?name='+name+'&desc='+desc;
 
-  $.post('/insert', {title: title, description: desc});
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', url);
+  xhr.onload = function() {
+    if (xhr.status === 200){
+      console.log('gud connection made');
+      xhr.send();
+      console.log('widget sent');
+    } else{
+      console.log('error inserting new widget');
+    }
+  }
+
+
+}
+
+function populate(){
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/', true);
+  xhr.send();
 }

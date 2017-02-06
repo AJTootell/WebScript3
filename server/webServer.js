@@ -24,5 +24,6 @@ app.get('/styleSheet', routes);
 app.get('/index', routes);
 
 app.use('/', home);
+app.post('/insert', home);
 
 app.listen(8080);
