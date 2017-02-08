@@ -1,0 +1,18 @@
+<h1>Header</h1>
+<section>
+  <form>
+    <input id="newName" type="name" placeholder="name">
+    <textarea id="newDesc" placeholder="description" rows="4" cols="50"></textarea>
+    <button id="submit" onclick="submitted()">Submit</button>
+  </form>
+</section>
+<section>
+  <ul>
+    {{#each results}}
+      <li id = "{{this.wid_id}}">
+        <h3>{{this.wid_name}} </h3>
+        <p>{{this.wid_description}}</p>
+      </li>
+    {{/each}}
+  </ul>
+</section>

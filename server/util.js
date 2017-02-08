@@ -1,4 +1,7 @@
-var debugging;
+var
+debugging,
+mysql = require('mysql'),
+config = require('./config.json');
 
 //turn on debugging
 function debugable(state){
@@ -15,5 +18,34 @@ function debug(text){
   }
 }
 
+function queryDB(query, datacb){
+
+  var
+  results,
+  sqlCon = mysql.createConnection(config.mysql),
+  good;
+
+  sqlCon.on('error',function(err) {
+    sqlCon.end();
+  });
+
+  sqlCon.query(query, function (err, data) {
+    //debug(data);
+    if(err) {
+      //cb(err);
+      console.error('failed to query', err);
+      sql.end();
+      good = false;
+    } else{
+      results = data;
+    };
+
+      sqlCon.end();
+      good = true;
+  });
+  sqlCon.on('end',function(){datacb(results,good)});
+}
+
 module.exports.debugable = debugable;
 module.exports.debug = debug;
+module.exports.queryDB = queryDB;
