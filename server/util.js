@@ -18,29 +18,32 @@ function debug(text){
   }
 }
 
-function queryDB(query, callback){
+function queryDB(query, datacb){
 
-  var results = [],
-  sqlCon = mysql.createConnection(config.mysql);
+  var
+  results,
+  sqlCon = mysql.createConnection(config.mysql),
+  good;
 
   sqlCon.on('error',function(err) {
     sqlCon.end();
   });
 
   sqlCon.query(query, function (err, data) {
+    //debug(data);
     if(err) {
-      cb(err);
+      //cb(err);
       console.error('failed to query', err);
       sql.end();
+      good = false;
     } else{
-      data.forEach(function(row){
-        results.push(row);
-      });
+      results = data;
+    };
 
       sqlCon.end();
-    }
+      good = true;
   });
-  sqlCon.on('end',function(){callback(results)});
+  sqlCon.on('end',function(){datacb(results,good)});
 }
 
 module.exports.debugable = debugable;
