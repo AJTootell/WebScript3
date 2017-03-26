@@ -6,13 +6,11 @@
     <button id="submit" onclick="submitted()">Submit</button>
   </form>
 </section>
-<section>
-  <ul>
-    {{#each results}}
-      <li id = "{{this.wid_id}}">
-        <h3>{{this.wid_name}} </h3>
-        <p>{{this.wid_description}}</p>
-      </li>
-    {{/each}}
-  </ul>
-</section>
+{{#each results}}
+  <script>
+    populate("{{this.wid_name}}");
+  </script>
+  <section id = "{{this.wid_name}}">
+      <h3>{{this.wid_name}} </h3>
+  </section>
+{{/each}}

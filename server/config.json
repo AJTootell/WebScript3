@@ -2,7 +2,7 @@
     "mysql": {
         "host": "localhost",
         "user": "root",
-        "password": "root",
+        "password": "",
         "database": "template",
 	"table": "users",
   "table": "layout",

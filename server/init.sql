@@ -1,5 +1,10 @@
 create database if not exists template;
 
+drop table template.layoutWidget;
+drop table template.layout;
+drop table template.widget;
+drop table template.users;
+
 create table if not exists template.users (
   user_username varchar(20) not null primary key,
   user_password varchar(20)
@@ -26,5 +31,4 @@ create table if not exists template.layoutWidget (
   REFERENCES widget(wid_id)
 );
 
-insert into widget(wid_name, wid_description) values ("Fred","It's a fred");
-insert into widget(wid_name, wid_description) values ("Bob","I'm a bob");
+insert into widget(wid_name, wid_description) values ("weather","Get the next weeks forecast of weather");

@@ -20,12 +20,52 @@ function submitted(){
   }
   console.log('widget sent');
   xhr.send();
-
-
 }
 
-function populate(){
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/', true);
-  xhr.send();
+function populate(widget){
+
+
+  switch (widget) {
+    case 'weather':
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '/weather', true);
+      xhr.onload = function() {
+        console.log("Getting widget: " + widget);
+        var
+        data = JSON.parse(xhr.responseText),
+        weatherWidget = document.getElementById('weather'),
+        ul = document.createElement("ul");
+        //console.log(data[0]);
+        data.forEach(function (row){
+          //console.log(row);
+          var
+          innerUl = document.createElement("ul"),
+          date = new Date(row.dateTime),
+          day = date.getDay();
+          appendNewListItem(innerUl,dayOfWeekAsString(day) + " " + row.dateTime)
+          appendNewListItem(innerUl,row.description)
+          appendNewListItem(innerUl,"Temperature: " + row.temp)
+          appendNewListItem(innerUl,"Cloud coverage: " + row.clouds + "%")
+          appendNewListItem(innerUl,"Wind speed: " + row.windSpeed)
+          appendNewListItem(innerUl,"Wind speed: " + row.seaLevel)
+          ul.append(innerUl)
+        });
+        weatherWidget.append(ul);
+      }
+      xhr.send();
+      break;
+    default:
+      console.log("Missing widget: " + widget)
+      break;
+  }
+}
+
+function dayOfWeekAsString(dayIndex) {
+  return ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][dayIndex];
+}
+
+function appendNewListItem(list, item) {
+  var li = document.createElement("li")
+  li.textContent = item;
+  list.append(li);
 }
