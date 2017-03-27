@@ -1,25 +1,16 @@
 p {
   color: blue;
 }
-.weather {
-  max-width: 90%;
+#weatherWidget {
+
 }
-.weather > ul {
-  display: flex;
+#weatherWidget > table {
+  table-layout: fixed;
+  background-color: lightblue;
   padding: 0;
   margin: 5px;
 }
 
-.weather > ul > ul {
-  margin: 5px;
-  background-color: lightblue;
-  border: 1px solid #bbb;
-  border-radius: 1em;
-  width: 15em;
-  list-style: none;
-  padding: 1em;
-}
-
-.weather > ul > ul > li {
-
+#weatherWidget > button {
+  height: 2em;
 }

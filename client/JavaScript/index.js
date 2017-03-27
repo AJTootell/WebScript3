@@ -27,7 +27,10 @@ function populate(widget){
   console.log("Getting widget: " + widget);
   switch (widget) {
     case 'weather':
-      createWeatherWidget();
+      today = new Date();
+      weatherWidget = createWeatherMenu()
+      document.body.append(weatherWidget);
+      createWeatherWidget(weatherWidget,today.getDay());
       break;
     default:
       console.log("Missing widget: " + widget)
@@ -35,15 +38,108 @@ function populate(widget){
   }
 }
 
-function addTableHeader(table,position,text) {
+/*
+██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
+██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+██  █  ██ █████   ███████    ██    ███████ █████   ██████
+██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+ ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+*/
+function createWeatherMenu(){
   var
-  tableHeader = document.createElement('th');
+  weatherWidget = document.createElement('section'),
+  today = new Date();
 
-  tableHeader.scope = position;
+  weatherWidget.id = 'weatherWidget';
 
-  tableHeader.innerHTML = text;
+  var day = today.getDay();
 
-  table.append(tableHeader);
+  createButton(function(e){
+    createWeatherWidget(weatherWidget,day);
+  },weatherWidget,dayOfWeekAsString(day));
+  createButton(function(e){
+    createWeatherWidget(weatherWidget,day +1);
+  },weatherWidget,dayOfWeekAsString(day +1));
+  createButton(function(e){
+    createWeatherWidget(weatherWidget,day +2);
+  },weatherWidget,dayOfWeekAsString(day +2));
+  createButton(function(e){
+    createWeatherWidget(weatherWidget,day +3);
+  },weatherWidget,dayOfWeekAsString(day +3));
+  createButton(function(e){
+    createWeatherWidget(weatherWidget,day +4);
+  },weatherWidget,dayOfWeekAsString(day +4));
+
+  return weatherWidget;
+}
+function createWeatherWidget(weatherWidget,day){
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/weather', true);
+  xhr.onload = function() {
+    var
+    data = JSON.parse(xhr.responseText),
+    table,
+    thread,
+    tr;
+
+    data.forEach(function(entry){
+      var
+      time = new Date(entry.dateTime);
+
+      if(time.getDay() == day){
+        if(time.getHours() == 0 || table == undefined){
+          oldTable = weatherWidget.children[5];
+          if(oldTable != undefined){
+            weatherWidget.removeChild(oldTable)
+          }
+          table = createTable(weatherWidget,[dayOfWeekAsString(time.getDay()),"Forecast","Temperature"]);
+        }
+
+        tr = document.createElement('tr');
+        table.children[table.children.length -1].append(tr);
+
+        addToTable(tr,formatTime(time),'th','row');
+        addToTable(tr,capitaliseFirstLetter(entry.description),'th','row');
+        addToTable(tr,Math.round(entry.temp) + '&#8451','th','row');
+      }
+    });
+    //document.getElementById('weatherWidget').append(table);
+  }
+  xhr.send();
+}
+
+function createButton(func,section,text){
+  var button = document.createElement('button');
+  button.innerHTML = text;
+  button.addEventListener('click',func)
+  section.append(button);
+}
+
+function createTable(section,headers){
+  table = document.createElement('table'),
+  thread = document.createElement('thread'),
+  tr = document.createElement('tr');
+
+  section.append(table);
+  table.append(thread);
+  thread.append(tr);
+
+  headers.forEach(function(header){
+    addToTable(tr,header,'th','col');
+  });
+  return table;
+}
+
+function addToTable(table,text,format,position) {
+  var
+  newEl = document.createElement(format);
+
+  if(format == 'th'){
+    newEl.scope = position;
+  }
+
+  newEl.innerHTML = text;
+  table.append(newEl);
 }
 
 function formatTime(date){
@@ -60,77 +156,9 @@ function formatTime(date){
 }
 
 function dayOfWeekAsString(dayIndex) {
-  return ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][dayIndex];
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex];
 }
 
-function appendNewListItem(list, item) {
-  var li = document.createElement("li")
-  li.textContent = item;
-  list.append(li);
-}
-
-/*
-██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
-██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-██  █  ██ █████   ███████    ██    ███████ █████   ██████
-██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
- ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
-*/
-
-
-
-function createWeatherWidget2(){
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/weather', true);
-  xhr.onload = function() {
-    var
-    data = JSON.parse(xhr.responseText),
-    weatherWidget = document.createElement('table');
-    weatherWidget.classList.add('weather');
-    weatherWidget.append(document.createElement('thread'));
-    weatherWidget.thread.append(document.createElement('tr'));
-
-    addTableHeader(weatherWidget.thread.tr,'col',"Forecast");
-    addTableHeader(weatherWidget.thread.tr,'col',"Temperature");
-
-    data.forEach(function(time){
-
-    });
-    document.body.append(weatherWidget);
-  }
-  xhr.send();
-}
-
-function createWeatherWidget(){
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', '/weather', true);
-  xhr.onload = function() {
-    var
-    data = JSON.parse(xhr.responseText),
-    weatherWidget = document.createElement('section'),
-    ul = document.createElement("ul");
-    weatherWidget.classList.add('weather');
-    //console.log(data[0]);
-    data.forEach(function (row){
-      //console.log(row);
-      var
-      innerUl = document.createElement("ul"),
-      date = new Date(row.dateTime),
-      day = date.getDay() - 1;
-      if(date.getHours() == 0){
-        weatherWidget.append(ul);
-        ul = document.createElement("ul");
-      }
-      appendNewListItem(innerUl,dayOfWeekAsString(day) + " " + formatTime(date))
-      appendNewListItem(innerUl,row.description)
-      appendNewListItem(innerUl,"Temp: " + Math.round(row.temp))
-      //appendNewListItem(innerUl,"Cloud coverage: " + row.clouds + "%")
-      //appendNewListItem(innerUl,"Wind speed: " + row.windSpeed)
-      //appendNewListItem(innerUl,"Wind speed: " + row.seaLevel)
-      ul.append(innerUl)
-    });
-    weatherWidget.append(ul);
-    document.body.append(weatherWidget);
-  }
-  xhr.send();
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
