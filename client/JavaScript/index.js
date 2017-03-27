@@ -33,8 +33,9 @@ function populate(widget){
         console.log("Getting widget: " + widget);
         var
         data = JSON.parse(xhr.responseText),
-        weatherWidget = document.getElementById('weather'),
+        weatherWidget = document.createElement('section'),
         ul = document.createElement("ul");
+        weatherWidget.classList.add('weather');
         //console.log(data[0]);
         data.forEach(function (row){
           //console.log(row);
@@ -51,6 +52,7 @@ function populate(widget){
           ul.append(innerUl)
         });
         weatherWidget.append(ul);
+        document.body.append(weatherWidget);
       }
       xhr.send();
       break;

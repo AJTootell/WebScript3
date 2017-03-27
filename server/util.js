@@ -2,7 +2,8 @@ var
 debugging,
 mysql = require('mysql'),
 config = require('./config.json'),
-fs = require('fs');
+fs = require('fs')
+http = require('http');
 
 //turn on debugging
 function debugable(state){
@@ -93,38 +94,44 @@ function getWeather(req,res){
   var
   data = fs.readFileSync('server/weather.json'),
   info = JSON.parse(data),
-  forecast = [];
-  info.list.forEach(function (row){
-    var weather = {
-      temp: row.main.temp,
-      seaLevel: row.main.sea_level,
-      description: row.weather[0].description,
-      clouds: row.clouds.all,
-      windSpeed: row.wind.speed,
-      dateTime: row.dt_txt
-    }
+  forecast = [],
+  earliestForecast = new Date(info.list[0].dt_txt),
+  today = new Date();
+  if(today.getTime() <= earliestForecast){
+    refreshWeatherData(/*getweather(req,res)*/);
+  }else{
+    info.list.forEach(function (row){
+      var weather = {
+        temp: row.main.temp,
+        seaLevel: row.main.sea_level,
+        description: row.weather[0].description,
+        clouds: row.clouds.all,
+        windSpeed: row.wind.speed,
+        dateTime: row.dt_txt
+      }
 
-    forecast.push(weather);
-    //debug(weather);
-  });
-  debug(forecast);
-  res.send(JSON.stringify(forecast));
+      forecast.push(weather);
+      //debug(weather);
+    });
 
+    debug(forecast);
+    res.send(JSON.stringify(forecast));
+  }
 }
 
-function refreshWeatherData(){
-  var xhr = new XMLHttpRequest();
-  var url = "http://api.openweathermap.org/data/2.5/forecast?id=2639996&APPID=0140a1756d7cd125eca1c034c43027b5";
-  var forecast;
+function refreshWeatherData(cb){
+  var url = "http://api.openweathermap.org/data/2.5/weather?id=2639996&APPID=0140a1756d7cd125eca1c034c43027b5&units=metric";
+  //var forecast;
 
-  xhr.open("GET", url, true);
-  xhr.onload = function() {
-    fs.writeFile('server/weather.json', JSON.stringify(xhr.responseText), 'utf8', function(err) {
+  http.get(url,function() {
+    fs.writeFileSync('server/weather.json', JSON.stringify(xhr.responseText), 'utf8', function(err) {
       if (err) throw err;
       debug("Weather saved");
+      if(cb != undefined)
+        cb();
     });
-  }
-  xhr.send();
+  });
+
 }
 
 module.exports.getHome = getHome;
