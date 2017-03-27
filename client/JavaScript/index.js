@@ -24,42 +24,39 @@ function submitted(){
 
 function populate(widget){
 
-
+  console.log("Getting widget: " + widget);
   switch (widget) {
     case 'weather':
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', '/weather', true);
-      xhr.onload = function() {
-        console.log("Getting widget: " + widget);
-        var
-        data = JSON.parse(xhr.responseText),
-        weatherWidget = document.createElement('section'),
-        ul = document.createElement("ul");
-        weatherWidget.classList.add('weather');
-        //console.log(data[0]);
-        data.forEach(function (row){
-          //console.log(row);
-          var
-          innerUl = document.createElement("ul"),
-          date = new Date(row.dateTime),
-          day = date.getDay();
-          appendNewListItem(innerUl,dayOfWeekAsString(day) + " " + row.dateTime)
-          appendNewListItem(innerUl,row.description)
-          appendNewListItem(innerUl,"Temperature: " + row.temp)
-          appendNewListItem(innerUl,"Cloud coverage: " + row.clouds + "%")
-          appendNewListItem(innerUl,"Wind speed: " + row.windSpeed)
-          appendNewListItem(innerUl,"Wind speed: " + row.seaLevel)
-          ul.append(innerUl)
-        });
-        weatherWidget.append(ul);
-        document.body.append(weatherWidget);
-      }
-      xhr.send();
+      createWeatherWidget();
       break;
     default:
       console.log("Missing widget: " + widget)
       break;
   }
+}
+
+function addTableHeader(table,position,text) {
+  var
+  tableHeader = document.createElement('th');
+
+  tableHeader.scope = position;
+
+  tableHeader.innerHTML = text;
+
+  table.append(tableHeader);
+}
+
+function formatTime(date){
+  var
+  formattedTime,
+  hours = date.getHours(),
+  minutes = date.getMinutes();
+
+  minutes = minutes < 10? minutes + "0": minutes;
+
+  formattedTime = hours + ":" + minutes;
+
+  return formattedTime;
 }
 
 function dayOfWeekAsString(dayIndex) {
@@ -70,4 +67,70 @@ function appendNewListItem(list, item) {
   var li = document.createElement("li")
   li.textContent = item;
   list.append(li);
+}
+
+/*
+██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
+██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+██  █  ██ █████   ███████    ██    ███████ █████   ██████
+██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+ ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+*/
+
+
+
+function createWeatherWidget2(){
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/weather', true);
+  xhr.onload = function() {
+    var
+    data = JSON.parse(xhr.responseText),
+    weatherWidget = document.createElement('table');
+    weatherWidget.classList.add('weather');
+    weatherWidget.append(document.createElement('thread'));
+    weatherWidget.thread.append(document.createElement('tr'));
+
+    addTableHeader(weatherWidget.thread.tr,'col',"Forecast");
+    addTableHeader(weatherWidget.thread.tr,'col',"Temperature");
+
+    data.forEach(function(time){
+
+    });
+    document.body.append(weatherWidget);
+  }
+  xhr.send();
+}
+
+function createWeatherWidget(){
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/weather', true);
+  xhr.onload = function() {
+    var
+    data = JSON.parse(xhr.responseText),
+    weatherWidget = document.createElement('section'),
+    ul = document.createElement("ul");
+    weatherWidget.classList.add('weather');
+    //console.log(data[0]);
+    data.forEach(function (row){
+      //console.log(row);
+      var
+      innerUl = document.createElement("ul"),
+      date = new Date(row.dateTime),
+      day = date.getDay() - 1;
+      if(date.getHours() == 0){
+        weatherWidget.append(ul);
+        ul = document.createElement("ul");
+      }
+      appendNewListItem(innerUl,dayOfWeekAsString(day) + " " + formatTime(date))
+      appendNewListItem(innerUl,row.description)
+      appendNewListItem(innerUl,"Temp: " + Math.round(row.temp))
+      //appendNewListItem(innerUl,"Cloud coverage: " + row.clouds + "%")
+      //appendNewListItem(innerUl,"Wind speed: " + row.windSpeed)
+      //appendNewListItem(innerUl,"Wind speed: " + row.seaLevel)
+      ul.append(innerUl)
+    });
+    weatherWidget.append(ul);
+    document.body.append(weatherWidget);
+  }
+  xhr.send();
 }

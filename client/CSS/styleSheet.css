@@ -5,7 +5,9 @@ p {
   max-width: 90%;
 }
 .weather > ul {
-  
+  display: flex;
+  padding: 0;
+  margin: 5px;
 }
 
 .weather > ul > ul {
@@ -13,5 +15,11 @@ p {
   background-color: lightblue;
   border: 1px solid #bbb;
   border-radius: 1em;
-  max-width: 15em;
+  width: 15em;
+  list-style: none;
+  padding: 1em;
+}
+
+.weather > ul > ul > li {
+
 }

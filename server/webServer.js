@@ -6,7 +6,8 @@ express = require('express'),
 app = express(),
 index = require('./routes/index.js'),
 util =  require('./util.js'),
-favicon = require('serve-favicon');
+favicon = require('serve-favicon'),
+weather = require('./widgets/weather.js');
 
 //check if there is an additional argument, if it is on the console.log debugs
 if(process.argv.length == 3){
@@ -26,6 +27,6 @@ app.get('/index', index);
 
 app.get('/', util.getHome);
 app.post('/insert', util.insertWidget);
-app.get('/weather', util.getWeather);
+app.get('/weather', weather.getWidget);
 
 app.listen(8080);
