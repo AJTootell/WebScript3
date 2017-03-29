@@ -1,13 +1,24 @@
-<h1>Header</h1>
-<section>
-  <form>
-    <input id="newName" type="name" placeholder="name">
-    <textarea id="newDesc" placeholder="description" rows="4" cols="50"></textarea>
-    <button id="submit" onclick="submitted()">Submit</button>
-  </form>
-</section>
-{{#each results}}
+<h1 id='layout{{thisLayout.lay_id}}'>{{thisLayout.lay_name}}</h1>
+<form id="widForm">
+  <select class="dropDown">
+    <option value="">Widgets</option>
+    {{#each allWidgets}}
+      <option value="{{this.wid_id}}">{{this.wid_name}}</option>
+    {{/each}}
+  </select>
+  <button id="submit" onclick="addWidget()">Add</button>
+</form>
+<form id="layForm">
+  <select class="dropDown">
+    <option value="">Layout</option>
+    {{#each allLayout}}
+      <option value="{{this.lay_id}}">{{this.lay_name}}</option>
+    {{/each}}
+  </select>
+  <button id="submit" onclick="changeLayout()">Update</button>
+</form>
+{{#each theseWidgets}}
   <script>
-    populate("{{this.wid_name}}");
+    populate("{{this.wid_name}}",{{this.laywid_x}},{{this.laywid_y}});
   </script>
 {{/each}}

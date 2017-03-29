@@ -49,29 +49,55 @@ function queryDB(query, datacb){
 
 function getHome(req, res) {
 
- debug("getting home page");
- queryDB('select * from widget', function(err, data){
-   if (!err) {
+ debug("getting testing page");
+// mysql.format()
+  var layId = req.query.layout;
+  queryDB('select * from layout where lay_id = ' + layId, function(err,data){
+    if(!err){
+      debug(data[0]);
+      var thisLayout = data[0]
+      queryDB('select * from widget join layoutWidget on widget.wid_id where lay_id = ' + layId, function(err, data){
+        if (!err) {
+          var layoutWidget = data;
+          queryDB('select * from widget', function(err, data){
+            if(!err){
+              var widgets = data;
+              queryDB('select * from layout', function(err, data){
+                if(!err){
+                  var layouts = data;
+                  res.status = 200;
 
-     debug("Data: ");
-     debug(data);
-
-     res.render('index', { results: data });
-   } else {
-     res.status = 500;
-   }
- });
+                  res.render('index', {theseWidgets: layoutWidget , allWidgets: widgets , allLayout: layouts, thisLayout: thisLayout });
+                  res.send(thisLayout);
+                } else{
+                  res.status = 500;
+                }
+              });
+            } else{
+              res.status = 500;
+            }
+          });
+        } else {
+          res.status = 500;
+        }
+      });
+    } else {
+      res.status = 500;
+    }
+  });
 }
 
-function insertWidget(req, res) {
+function addWidget(req, res) {
 
-  debug("inserting");
+  debug("adding");
 
   var
-  name = req.query.name,
-  desc = req.query.desc;
+  widget = req.query.widget,
+  layout = req.query.layout;
+  debug(widget);
+  debug(layout);
 
-  var query = 'insert into widget(wid_name, wid_description) values (' + name + ', ' + desc + ')'
+  var query = 'insert into layoutWidget(lay_id,wid_id,laywid_x,laywid_y) values ('+layout+','+widget+',0,0);';
 
   queryDB(query, function(err, data){
     if (!err){
@@ -88,7 +114,7 @@ function insertWidget(req, res) {
 }
 
 module.exports.getHome = getHome;
-module.exports.insertWidget = insertWidget;
+module.exports.addWidget = addWidget;
 
 module.exports.debugable = debugable;
 module.exports.debug = debug;

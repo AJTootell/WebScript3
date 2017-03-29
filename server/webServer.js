@@ -25,8 +25,8 @@ app.use(express.static('../client'));
 app.get('/styleSheet', index);
 app.get('/index', index);
 
-app.get('/', util.getHome);
-app.post('/insert', util.insertWidget);
+app.get('/dashBoard', util.getHome);
+app.post('/add', util.addWidget);
 app.get('/weather', weather.getWidget);
 
 app.listen(8080);

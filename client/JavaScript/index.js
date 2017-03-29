@@ -1,9 +1,11 @@
-function submitted(){
-  console.log("Getting a new one in there");
+function addWidget(){
+  console.log("Adding a widget");
   var
-  name = document.querySelector('#newName').value,
-  desc = document.querySelector('#newDesc').value,
-  url = '/insert?name="'+encodeURIComponent(name)+'"&desc="'+encodeURIComponent(desc)+'"';
+  widForm = document.getElementById('widForm'),
+  widget = encodeURIComponent(widForm[0].value),
+  thisLayout = window.body.h1,
+  layout = encodeURIComponent(thisLayout.id),
+  url = '/add?widget="'+widget+'"&layout="'+layout+'"';
 
   console.log(url);
 
@@ -18,17 +20,21 @@ function submitted(){
       console.log('error inserting new widget');
     }
   }
-  console.log('widget sent');
+  console.log('widget added');
   xhr.send();
 }
 
-function populate(widget){
+function changeLayout(){
+
+}
+
+function populate(widget,xPos,yPos){
 
   console.log("Getting widget: " + widget);
   switch (widget) {
     case 'weather':
       today = new Date();
-      weatherWidget = createWeatherMenu()
+      weatherWidget = createWeatherMenu(xPos,yPos)
       document.body.append(weatherWidget);
       createWeatherWidget(weatherWidget,today.getDay());
       break;
@@ -36,43 +42,70 @@ function populate(widget){
       console.log("Missing widget: " + widget)
       break;
   }
+
+}
+/*
+  ██████  ██████   █████   ██████      ███████ ███    ██  █████  ██████  ██      ███████ ██████
+  ██   ██ ██   ██ ██   ██ ██           ██      ████   ██ ██   ██ ██   ██ ██      ██      ██   ██
+  ██   ██ ██████  ███████ ██   ███     █████   ██ ██  ██ ███████ ██████  ██      █████   ██   ██
+  ██   ██ ██   ██ ██   ██ ██    ██     ██      ██  ██ ██ ██   ██ ██   ██ ██      ██      ██   ██
+  ██████  ██   ██ ██   ██  ██████      ███████ ██   ████ ██   ██ ██████  ███████ ███████ ██████
+*/
+
+var widget;
+
+function widgetMoveStarted (e) {
+  widget = e.target;
+  widget.addEventListener("mousemove", moveHandler, true);
 }
 
+function widgetDropped (e) {
+  widget.removeEventListener("mousemove", moveHandler, true);
+}
+
+function moveHandler (e) {
+  e.preventDefault();
+  //console.log()
+  widget.style.left = e.pageX - 25 + 'px';
+  widget.style.top = e.pageY - 25 + 'px';
+
+}
+
+
 /*
-██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
-██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-██  █  ██ █████   ███████    ██    ███████ █████   ██████
-██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
- ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+  ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
+  ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+  ██  █  ██ █████   ███████    ██    ███████ █████   ██████
+  ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+   ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
 */
-function createWeatherMenu(){
+function createWeatherMenu(xPos,yPos){
   var
   weatherWidget = document.createElement('section'),
   today = new Date();
 
-  weatherWidget.id = 'weatherWidget';
+  weatherWidget.classList.add('weatherWidget');
+  weatherWidget.style = 'left: ' + yPos + "px; \n top: " + xPos + "px;";
+  //weatherWidget.draggable = true;
 
   var day = today.getDay();
 
-  createButton(function(e){
-    createWeatherWidget(weatherWidget,day);
-  },weatherWidget,dayOfWeekAsString(day));
-  createButton(function(e){
-    createWeatherWidget(weatherWidget,day +1);
-  },weatherWidget,dayOfWeekAsString(day +1));
-  createButton(function(e){
-    createWeatherWidget(weatherWidget,day +2);
-  },weatherWidget,dayOfWeekAsString(day +2));
-  createButton(function(e){
-    createWeatherWidget(weatherWidget,day +3);
-  },weatherWidget,dayOfWeekAsString(day +3));
-  createButton(function(e){
-    createWeatherWidget(weatherWidget,day +4);
-  },weatherWidget,dayOfWeekAsString(day +4));
+  for(var i=0;i<6;i++) {
+    var d = function(a) {
+      return createButton(function(){
+        createWeatherWidget(weatherWidget,day+a);
+      },weatherWidget,dayOfWeekAsString(day+a));
+    }(i);
+  }
+
+  weatherWidget.addEventListener("mouseup", widgetDropped, false);
+  weatherWidget.addEventListener("mousedown", widgetMoveStarted, false)
 
   return weatherWidget;
 }
+
 function createWeatherWidget(weatherWidget,day){
+  day = day > 6 ? day -7:day;
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/weather', true);
   xhr.onload = function() {
@@ -98,15 +131,23 @@ function createWeatherWidget(weatherWidget,day){
         tr = document.createElement('tr');
         table.children[table.children.length -1].append(tr);
 
-        addToTable(tr,formatTime(time),'th','row');
-        addToTable(tr,capitaliseFirstLetter(entry.description),'th','row');
-        addToTable(tr,Math.round(entry.temp) + '&#8451','th','row');
+        addToTable(tr,formatTime(time),'td','row');
+        addToTable(tr,capitaliseFirstLetter(entry.description),'td','row');
+        addToTable(tr,Math.round(entry.temp) + '&#8451','td','row');
       }
     });
     //document.getElementById('weatherWidget').append(table);
   }
   xhr.send();
 }
+
+/*
+  ██    ██ ████████ ██ ██
+  ██    ██    ██    ██ ██
+  ██    ██    ██    ██ ██
+  ██    ██    ██    ██ ██
+   ██████     ██    ██ ███████
+*/
 
 function createButton(func,section,text){
   var button = document.createElement('button');
@@ -156,6 +197,7 @@ function formatTime(date){
 }
 
 function dayOfWeekAsString(dayIndex) {
+  dayIndex = dayIndex > 6 ? dayIndex -7:dayIndex;
   return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex];
 }
 

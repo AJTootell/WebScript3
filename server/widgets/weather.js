@@ -17,12 +17,8 @@ function getWidget(req,res){
   catch (e) {
     util.debug(e);
     util.debug("Refreashing weather data");
-    refreshWeatherData(function(){getWeather(req,res)});
+    refreshWeatherData(function(){getWidget(req,res)});
   }
-
-
-
-
 }
 
 function getWeather(req,res,data){
@@ -41,7 +37,7 @@ function getWeather(req,res,data){
 
   if(earliestForecast < today){
     util.debug("Updating weather data");
-    refreshWeatherData(function(){getWeather(req,res)});
+    refreshWeatherData(function(){getWidget(req,res)});
   }else{
 
     info.list.forEach(function (row){
