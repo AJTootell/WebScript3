@@ -31,6 +31,7 @@ app.get('/', util.getLogIn);
 app.get('/dashboard', util.getDashboard);
 app.post('/createNewLayout', util.createNewLayout);
 app.post('/addWidget', util.addWidget);
+app.post('/removeWidget', util.removeWidget);
 app.post('/newWidgetPosition', util.newWidgetPosition);
 app.get('/weather', weather.getWidget);
 

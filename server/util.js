@@ -71,7 +71,7 @@ function getLogIn(req,res){
     }
 
     res.status = 200;
-    res.render('login', {allLayouts: data});
+    res.render('logIn', {allLayouts: data});
   });
 }
 
@@ -185,6 +185,27 @@ function addWidget(req, res) {
   });
 }
 
+function removeWidget(req,res){
+
+  debug("\nRemoving a widget")
+  var
+  widgetId = req.query.widgetId,
+  layoutId = req.query.layoutId,
+  query = 'delete from layoutWidget where laywid_id = '+widgetId+' and lay_id = '+layoutId+';';
+
+  queryDB(query, function(err, data){
+    if(err){
+      res.statuscode = 500;
+      return;
+    }
+
+    res.status = 200;
+    debug("Widget removed");
+    res.redirect("/dashboard?layout="+layoutId);
+    res.send();
+  });
+}
+
 function newWidgetPosition(req,res){
 
   debug("\nRepositioning a widget");
@@ -192,7 +213,7 @@ function newWidgetPosition(req,res){
   xPos = req.query.xPos,
   yPos = req.query.yPos,
   laywidId = req.query.laywid,
-  query = 'update layoutwidget set laywid_x = "' + xPos +
+  query = 'update layoutWidget set laywid_x = "' + xPos +
   '", laywid_y = "' + yPos +
   '" where laywid_id = ' + laywidId +';';
 
@@ -210,6 +231,7 @@ module.exports.getLogIn = getLogIn;
 module.exports.createNewLayout = createNewLayout;
 module.exports.getDashboard = getDashboard;
 module.exports.addWidget = addWidget;
+module.exports.removeWidget = removeWidget;
 module.exports.newWidgetPosition = newWidgetPosition;
 
 module.exports.debugable = debugable;

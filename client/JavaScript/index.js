@@ -1,26 +1,46 @@
-function addWidget(){
+
+function directToDashboard(){
+
   var
-  widOptions = document.getElementById('widgetOptions'),
-  widget = encodeURIComponent(widOptions.value),
-  thisLayout = document.location.search.split('=')[1],
-  layout = encodeURIComponent(thisLayout),
-  url = '/addWidget?widgetId="'+widget+'"&layoutId="'+layout+'"';
+  layout = encodeURIComponent(document.getElementById('laySelect')[0].value),
+  url = '/dashboard?layout=' + layout;
 
   console.log(url);
-  if(!widget){
-    alert("Select a widget to add first.")
+  if(!layout){
+    alert("Select a layout to go to first.")
     return;
   }
+  location.href = url;
 
-  var xhr = new XMLHttpRequest();
+}
 
+function createNewLayout(){
+  var
+  layoutName = document.getElementById("newLayoutName").value,
+  url = "/createNewLayout?layoutName="+layoutName,
+  xhr = new XMLHttpRequest();
+
+  console.log(url)
+  if(!layoutName){
+    alert("Name the new layout.")
+    return;
+  }
   xhr.open('POST', url, true);
 
   xhr.onload = function(){
-    location.reload();
+    //location.reload();
   };
+
   xhr.send();
 }
+
+/*
+██     ██ ██ ██████   ██████  ███████ ████████
+██     ██ ██ ██   ██ ██       ██         ██
+██  █  ██ ██ ██   ██ ██   ███ █████      ██
+██ ███ ██ ██ ██   ██ ██    ██ ██         ██
+███ ███  ██ ██████   ██████  ███████    ██
+*/
 
 function populate(widgetName,widgetId,xPos,yPos){
   console.log("Getting widget: " + widgetName);
@@ -45,21 +65,6 @@ function populate(widgetName,widgetId,xPos,yPos){
   }
 }
 
-function directToDashboard(){
-
-  var
-  layout = encodeURIComponent(document.getElementById('laySelect')[0].value),
-  url = '/dashboard?layout=' + layout;
-
-  console.log(url);
-  if(!layout){
-    alert("Select a layout to go to first.")
-    return;
-  }
-  location.href = url;
-
-}
-
 function createWidget(widgetName,widgetId,xPos,yPos){
   var
   widget = document.createElement('section');
@@ -71,33 +76,46 @@ function createWidget(widgetName,widgetId,xPos,yPos){
   document.body.append(widget);
 
   widget.addEventListener("mousedown", widgetMoveStarted, false);
+
+  del = document.createElement('button');
+  del.classList.add('delete');
+  del.textContent = 'X';
+  del.type = 'reset';
+  //del.onclick = 'removeWidget()';
+  del.addEventListener('click',removeWidget,false);
+  widget.append(del);
 }
 
-function createNewLayout(){
+function addWidget(){
   var
-  layoutName = document.getElementById("newLayoutName").value,
-  url = "/createNewLayout?layoutName="+layoutName,
-  xhr = new XMLHttpRequest();
+  widOptions = document.getElementById('widgetOptions'),
+  widget = encodeURIComponent(widOptions.value),
+  thisLayout = document.location.search.split('=')[1],
+  layout = encodeURIComponent(thisLayout),
+  url = '/addWidget?widgetId="'+widget+'"&layoutId="'+layout+'"';
 
-  console.log(url)
-  if(!layoutName){
-    alert("Name the new layout.")
+  console.log(url);
+  if(!widget){
+    alert("Select a widget to add first.")
     return;
   }
+
+  var xhr = new XMLHttpRequest();
+
   xhr.open('POST', url, true);
 
   xhr.onload = function(){
-    //location.reload();
+    location.reload();
   };
-
   xhr.send();
 }
+
 /*
-██████  ██████   █████   ██████      ███████ ███    ██  █████  ██████  ██      ███████ ██████
-██   ██ ██   ██ ██   ██ ██           ██      ████   ██ ██   ██ ██   ██ ██      ██      ██   ██
-██   ██ ██████  ███████ ██   ███     █████   ██ ██  ██ ███████ ██████  ██      █████   ██   ██
-██   ██ ██   ██ ██   ██ ██    ██     ██      ██  ██ ██ ██   ██ ██   ██ ██      ██      ██   ██
-██████  ██   ██ ██   ██  ██████      ███████ ██   ████ ██   ██ ██████  ███████ ███████ ██████
+███████ ██    ██ ███████ ███    ██ ████████ ███████
+██      ██    ██ ██      ████   ██    ██    ██
+█████   ██    ██ █████   ██ ██  ██    ██    ███████
+██       ██  ██  ██      ██  ██ ██    ██         ██
+███████   ████   ███████ ██   ████    ██    ███████
 */
 
 var eventWidget;
@@ -127,6 +145,25 @@ function moveHandler (e) {
   e.preventDefault();
   eventWidget.style.left = e.pageX - 25 + 'px';
   eventWidget.style.top = e.pageY - 25 + 'px';
+}
+
+function removeWidget(e){
+  var
+  xhr = new XMLHttpRequest(),
+  widgetId = e.target.parentNode.id.slice(6),
+  layoutId = document.location.search.split('=')[1],
+  url = '/removeWidget?widgetId='+widgetId+'&layoutId='+layoutId;
+
+  console.log(widgetId);
+  console.log(url);
+
+  xhr.open('POST', url, true);
+
+  xhr.onload = function(){
+    location.reload();
+  };
+
+  xhr.send();
 }
 
 /*
@@ -161,6 +198,21 @@ function createTwitterWidget(widgetId){
     }
   }(document,"script","twitter-wjs");
 }
+
+function restyleTwitter(){
+  var cont = true;
+  while(cont){
+    if(document.getElementById('twitter-widget-0') != null){
+      document.getElementById('twitter-widget-0').style.maxheight = '250px';
+      cont = false;
+    } else{
+      setTimeout(function () {
+        restyleTwitter();
+      }, 100);;
+    }
+  }
+}
+
 /*
 ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
 ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
