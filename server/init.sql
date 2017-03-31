@@ -3,7 +3,6 @@ create database if not exists template;
 drop table if exists template.layoutWidget;
 drop table if exists template.layout;
 drop table if exists template.widget;
-drop table if exists template.user;
 
 create table if not exists template.layout (
   lay_id int not null auto_increment primary key,
@@ -31,5 +30,7 @@ create table if not exists template.layoutWidget (
 );
 
 insert into widget(wid_name, wid_description) values ("weather", "Get the next weeks forecast of weather");
+insert into widget(wid_name, wid_description) values ("twitter", "Latest twitter feed from uni");
+
 insert into layout(lay_name, lay_imageBack, lay_imageOrHex) values ("Testing", false, "#aa00aa");
 insert into layoutWidget(lay_id,wid_id,laywid_x,laywid_y) values (1,1,50,50);

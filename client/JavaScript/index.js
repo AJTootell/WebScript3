@@ -12,7 +12,6 @@ function addWidget(){
     return;
   }
 
-
   var xhr = new XMLHttpRequest();
 
   xhr.open('POST', url, true);
@@ -20,7 +19,6 @@ function addWidget(){
   xhr.onload = function(){
     location.reload();
   };
-
   xhr.send();
 }
 
@@ -28,19 +26,23 @@ function populate(widgetName,widgetId,xPos,yPos){
   console.log("Getting widget: " + widgetName);
   switch (widgetName) {
     case 'weather':
-      var
-      weatherWidget,
-      today = new Date();
+    console.log("Adding new weather widget: " + widgetName + widgetId);
+    var
+    today = new Date();
 
-      createWidget(widgetName,widgetId,xPos,yPos);
-      createWeatherWidget(widgetId);
-      populateWeatherWidget(widgetId,today.getDay());
-      break;
+    createWidget(widgetName,widgetId,xPos,yPos);
+    createWeatherWidget(widgetId);
+    populateWeatherWidget(widgetId,today.getDay());
+    break;
+    case 'twitter':
+    console.log("Adding new twitter widget: " + widgetName + widgetId);
+    createWidget(widgetName,widgetId,xPos,yPos);
+    createTwitterWidget(widgetId);
+    break;
     default:
-      console.log("Missing widget: " + widget)
-      break;
+    console.log("Missing widget: " + widget)
+    break;
   }
-
 }
 
 function directToDashboard(){
@@ -127,13 +129,44 @@ function moveHandler (e) {
   eventWidget.style.top = e.pageY - 25 + 'px';
 }
 
+/*
+████████ ██     ██ ██ ████████ ████████ ███████ ██████
+---██    ██     ██ ██    ██       ██    ██      ██   ██
+---██    ██  █  ██ ██    ██       ██    █████   ██████
+---██    ██ ███ ██ ██    ██       ██    ██      ██   ██
+---██     ███ ███  ██    ██       ██    ███████ ██   ██
+*/
 
+function createTwitterWidget(widgetId){
+  var
+  widget = document.getElementById(widgetId),
+  //twitter = document.createElement('a');
+  twitter = document.createElement('a');
+  twitter.classList.add("twitter-timeline");
+  twitter.href="https://twitter.com/hashtag/portsmouthuni";
+  twitter.dataset.widgetId = "847742735004061696";
+  twitter.innerhtml = "#portsmouthuni Tweets"
+  widget.append(twitter);
+  twitter.script = function(d,s,id){
+    //console.log("D: " + d + ", S: "+s+", id: "+id);
+    var
+    js,
+    fjs=d.getElementsByTagName(s)[0],
+    p=/^http:/.test(d.location)?'http':'https';
+    if(!d.getElementById(id)){
+      js=d.createElement(s);
+      js.id=id;
+      js.src=p+"://platform.twitter.com/widgets.js";
+      fjs.parentNode.insertBefore(js,fjs);
+    }
+  }(document,"script","twitter-wjs");
+}
 /*
 ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
 ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
 ██  █  ██ █████   ███████    ██    ███████ █████   ██████
 ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
- ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+-███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
 */
 
 function createWeatherWidget(widgetId){
@@ -197,7 +230,7 @@ function populateWeatherWidget(widgetId,day){
 ██    ██    ██    ██ ██
 ██    ██    ██    ██ ██
 ██    ██    ██    ██ ██
- ██████     ██    ██ ███████
+-██████     ██    ██ ███████
 */
 
 function createButton(func,parent,text){

@@ -44,6 +44,7 @@ function queryDB(query, datacb){
       debug("Results: "+JSON.stringify(row));
     });*/
     results = data;
+    debug(JSON.stringify(results));
     broke = false;
     sqlCon.end();
   };
@@ -55,8 +56,8 @@ sqlCon.on('end',function(){datacb(broke,results)});
 ███████ ███████ ██████  ██    ██ ███████ ██████      ███████ ██    ██ ███    ██  ██████ ████████ ██  ██████  ███    ██ ███████
 ██      ██      ██   ██ ██    ██ ██      ██   ██     ██      ██    ██ ████   ██ ██         ██    ██ ██    ██ ████   ██ ██
 ███████ █████   ██████  ██    ██ █████   ██████      █████   ██    ██ ██ ██  ██ ██         ██    ██ ██    ██ ██ ██  ██ ███████
-██ ██      ██   ██  ██  ██  ██      ██   ██     ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
-█████ ███████ ██   ██   ████   ███████ ██   ██     ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
+-----██ ██      ██   ██  ██  ██  ██      ██   ██     ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
+███████ ███████ ██   ██   ████   ███████ ██   ██     ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
 
 function getLogIn(req,res){
@@ -127,7 +128,7 @@ function getDashboard(req, res) {
       return;
     }
     var thisLayout = data[0];
-    queryDB('select * from widget join layoutWidget on widget.wid_id where lay_id = ' + layId + ';', function(err, data){
+    queryDB('SELECT * FROM layoutWidget natural join widget WHERE lay_id = ' + layId + ';', function(err, data){
       if(err){
         res.status = 500;
         return;

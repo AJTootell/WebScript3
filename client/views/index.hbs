@@ -12,6 +12,7 @@
 
 {{#each theseWidgets}}
   <script>
+  console.log(JSON.stringify('{{this.laywid_id}}'));
   populate("{{this.wid_name}}",'widget{{this.laywid_id}}',{{this.laywid_x}},{{this.laywid_y}});
   </script>
 {{/each}}
