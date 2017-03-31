@@ -17,8 +17,12 @@ function debug(text){
     console.log(text);
   }
 }
-
-//open connection to sql database, run given query and run callback with err, data
+/*
+open connection to sql database, run given query and run callback with err, data
+log the arr if occured and exit running
+log the query made
+log the data returned
+*/
 function queryDB(query, datacb){
   debug("\nQuery ran: " + query);
   var
@@ -59,7 +63,9 @@ sqlCon.on('end',function(){datacb(broke,results)});
 -----██ ██      ██   ██  ██  ██  ██      ██   ██     ██      ██    ██ ██  ██ ██ ██         ██    ██ ██    ██ ██  ██ ██      ██
 ███████ ███████ ██   ██   ████   ███████ ██   ██     ██       ██████  ██   ████  ██████    ██    ██  ██████  ██   ████ ███████
 */
-
+/*
+renders the log in page with list of all the layouts
+*/
 function getLogIn(req,res){
 
   debug("\nGetting log in page");
@@ -74,7 +80,10 @@ function getLogIn(req,res){
     res.render('logIn', {allLayouts: data});
   });
 }
-
+/*
+adds a new layout to the database
+working progress to make it then redirect to the blank layout
+*/
 function createNewLayout(req,res){
 
   debug("\nCreating a new layout");
@@ -104,7 +113,12 @@ function createNewLayout(req,res){
     });
   });
 }
-
+/*
+renders the given layout with a lists of:
+  all widgets which can be added
+  all widgets included in that layout
+  information about that paticular layout
+*/
 function getDashboard(req, res) {
 
   debug("\nGetting layout");
@@ -158,7 +172,9 @@ function getDashboard(req, res) {
 
   });
 }
-
+/*
+adds a new widget to a layout in the database, therefore when layout is next called will add that widget to list of those to render
+*/
 function addWidget(req, res) {
 
   debug("\nAdding a widget");
@@ -184,7 +200,9 @@ function addWidget(req, res) {
     res.send();
   });
 }
-
+/*
+removes a widget from a set layout so when next call that layout is not rendered
+*/
 function removeWidget(req,res){
 
   debug("\nRemoving a widget")
@@ -205,7 +223,9 @@ function removeWidget(req,res){
     res.send();
   });
 }
-
+/*
+Updates the position on the page a widget shoudl be rendered so layout of widgets is recalled on refresh and after server downtime
+*/
 function newWidgetPosition(req,res){
 
   debug("\nRepositioning a widget");

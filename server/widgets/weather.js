@@ -4,6 +4,10 @@ fs = require('fs'),
 http = require('http'),
 path = require('path');
 
+/*
+trys to get the weatehr data from the json file and if can read it parse is or convert it then refreshes the data
+*/
+
 function getWidget(req,res){
 
   var
@@ -20,7 +24,10 @@ function getWidget(req,res){
     refreshWeatherData(function(){getWidget(req,res)});
   }
 }
-
+/*
+checks the age oof the data, if more than 3 hours off then updates and overwrites the data
+if not out dated then convertsto an array of JSONs containg only required infroamtion
+*/
 function getWeather(req,res,data){
 
   util.debug("Getting weather data");
@@ -58,7 +65,9 @@ function getWeather(req,res,data){
     res.send(JSON.stringify(forecast));
   }
 }
-
+/*
+calls the weather data from the open weather map servers and saves it to a JSON file once aquired
+*/
 function refreshWeatherData(cb){
   var
   options = {

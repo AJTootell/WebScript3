@@ -1,4 +1,7 @@
-
+/*
+Redirect from login page to delected dashboard
+changes url to appropriate id for the option and lets server do the serving of the new page
+*/
 function directToDashboard(){
 
   var
@@ -13,7 +16,9 @@ function directToDashboard(){
   location.href = url;
 
 }
-
+/*
+Takes given name of the new layout and posts to server to create new blank dashboard
+*/
 function createNewLayout(){
   var
   layoutName = document.getElementById("newLayoutName").value,
@@ -41,7 +46,10 @@ function createNewLayout(){
 ██ ███ ██ ██ ██   ██ ██    ██ ██         ██
 ███ ███  ██ ██████   ██████  ███████    ██
 */
-
+/*
+points direction to create blank widget and populate with specific data
+easily add new widgets from here
+*/
 function populate(widgetName,widgetId,xPos,yPos){
   console.log("Getting widget: " + widgetName);
   switch (widgetName) {
@@ -64,7 +72,12 @@ function populate(widgetName,widgetId,xPos,yPos){
     break;
   }
 }
-
+/*
+create a blank template of a widget of class section and class based on what widget it is
+sets a unique id with widget + id of widget in layoutwidget table
+adds event listener to initiate movement of the widget freely areound the page
+adds a delete button to remove the widget
+*/
 function createWidget(widgetName,widgetId,xPos,yPos){
   var
   widget = document.createElement('section');
@@ -72,7 +85,6 @@ function createWidget(widgetName,widgetId,xPos,yPos){
   widget.classList.add(widgetName);
   widget.id = widgetId;
   widget.style = 'left: ' + xPos + "px; \n top: " + yPos + "px;";
-  //weatherWidget.draggable = true;
   document.body.append(widget);
 
   widget.addEventListener("mousedown", widgetMoveStarted, false);
@@ -81,11 +93,15 @@ function createWidget(widgetName,widgetId,xPos,yPos){
   del.classList.add('delete');
   del.textContent = 'X';
   del.type = 'reset';
-  //del.onclick = 'removeWidget()';
   del.addEventListener('click',removeWidget,false);
   widget.append(del);
 }
 
+/*
+adds a new widget to the layout based on choosen option
+posts to the server with the widget id and the layout id
+reloads teh page when server has finished
+*/
 function addWidget(){
   var
   widOptions = document.getElementById('widgetOptions'),
@@ -117,9 +133,13 @@ function addWidget(){
 ██       ██  ██  ██      ██  ██ ██    ██         ██
 ███████   ████   ███████ ██   ████    ██    ███████
 */
-
+/*
+seemly unavoidable and greatly irritating global variable
+*/
 var eventWidget;
-
+/*
+sets global varaible and allows target to be moved and end movement
+*/
 function widgetMoveStarted (e) {
   if(this === e.target){
     eventWidget = e.currentTarget;
@@ -127,7 +147,10 @@ function widgetMoveStarted (e) {
     eventWidget.addEventListener("mouseup", widgetDropped, false);
   }
 }
-
+/*
+removes ability to move and end moving
+posts to server to update the widgets new positiooon so not lost if refresh or turn server off
+*/
 function widgetDropped (e) {
   eventWidget.removeEventListener("mousemove", moveHandler, true);
   eventWidget.removeEventListener("mouseup", widgetDropped, false);
@@ -140,13 +163,18 @@ function widgetDropped (e) {
   xhr.open('POST',url,true);
   xhr.send();
 }
-
+/*
+updates the widgets postion on the page after each little move
+*/
 function moveHandler (e) {
   e.preventDefault();
   eventWidget.style.left = e.pageX - 25 + 'px';
   eventWidget.style.top = e.pageY - 25 + 'px';
 }
-
+/*
+removes a set widget, based on target clicked, from the database
+reloads the page with remaining wigets for that layout
+*/
 function removeWidget(e){
   var
   xhr = new XMLHttpRequest(),
@@ -165,7 +193,11 @@ function removeWidget(e){
 
   xhr.send();
 }
-
+/*
+toggle the headers visibility between visible and hidden
+toggle buttons opacity from 1 to 0.3
+allows for a tidier asthetic on a full screen dashboard
+*/
 function hideHeader(e){
   var
   button = document.getElementById('hideMe'),
@@ -186,7 +218,9 @@ function hideHeader(e){
 ---██    ██ ███ ██ ██    ██       ██    ██      ██   ██
 ---██     ███ ███  ██    ██       ██    ███████ ██   ██
 */
-
+/*
+create a twitter widget from twitters api and add it to the given widget
+*/
 function createTwitterWidget(widgetId){
   var
   widget = document.getElementById(widgetId),
@@ -211,7 +245,9 @@ function createTwitterWidget(widgetId){
     }
   }(document,"script","twitter-wjs");
 }
-
+/*
+attempts to change the stlye attributes of the twitter widget every 100ms until successful
+*/
 function restyleTwitter(){
   var cont = true;
   while(cont){
@@ -233,7 +269,9 @@ function restyleTwitter(){
 ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
 -███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
 */
-
+/*
+gets template widgte and adds buttons to populate the widget depending which day of weather is requested
+*/
 function createWeatherWidget(widgetId){
 
   var
@@ -249,7 +287,10 @@ function createWeatherWidget(widgetId){
     }(i);
   }
 }
-
+/*
+populates a table with the requested days weather, updates every 3 hours
+get the data from the server as a JSON string
+*/
 function populateWeatherWidget(widgetId,day){
 
   var
@@ -297,14 +338,18 @@ function populateWeatherWidget(widgetId,day){
 ██    ██    ██    ██ ██
 -██████     ██    ██ ███████
 */
-
+/*
+create a default button with a click function/event, a parent element to be stored ina nd text to e displayed on the buttons
+*/
 function createButton(func,parent,text){
   var button = document.createElement('button');
   button.innerHTML = text;
   button.addEventListener('click',func);
   parent.append(button);
 }
-
+/*
+create a default table with a parent (section) and list of headers
+*/
 function createTable(section,headers){
   table = document.createElement('table'),
   thread = document.createElement('thread'),
@@ -319,7 +364,10 @@ function createTable(section,headers){
   });
   return table;
 }
-
+/*
+adds a new cell to the given table containin given text
+format used to allow creation of data cells or headers
+*/
 function addToTable(table,text,format,position) {
   var
   newEl = document.createElement(format);
@@ -331,7 +379,9 @@ function addToTable(table,text,format,position) {
   newEl.innerHTML = text;
   table.append(newEl);
 }
-
+/*
+takes a data and returns the time shown as a 24 hours digital clock style
+*/
 function formatTime(date){
   var
   formattedTime,
@@ -344,10 +394,12 @@ function formatTime(date){
 
   return formattedTime;
 }
-
+/*
+return text day of week when given numerical, must not exceed 13
+*/
 function dayOfWeekAsString(dayIndex) {
   dayIndex = dayIndex > 6 ? dayIndex -7:dayIndex;
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex];
+  return ["Sun","Mon","Tues","Wed","Thur","Fri","Sat"][dayIndex];
 }
 
 function capitaliseFirstLetter(string) {
