@@ -7,6 +7,11 @@ function addWidget(){
   url = '/addWidget?widgetId="'+widget+'"&layoutId="'+layout+'"';
 
   console.log(url);
+  if(!widget){
+    alert("Select a widget to add first.")
+    return;
+  }
+
 
   var xhr = new XMLHttpRequest();
 
@@ -45,7 +50,10 @@ function directToDashboard(){
   url = '/dashboard?layout=' + layout;
 
   console.log(url);
-
+  if(!layout){
+    alert("Select a layout to go to first.")
+    return;
+  }
   location.href = url;
 
 }
@@ -65,13 +73,20 @@ function createWidget(widgetName,widgetId,xPos,yPos){
 
 function createNewLayout(){
   var
-  layoutName = document.getElementById("newLayoutName"),
+  layoutName = document.getElementById("newLayoutName").value,
   url = "/createNewLayout?layoutName="+layoutName,
   xhr = new XMLHttpRequest();
 
   console.log(url)
-
+  if(!layoutName){
+    alert("Name the new layout.")
+    return;
+  }
   xhr.open('POST', url, true);
+
+  xhr.onload = function(){
+    //location.reload();
+  };
 
   xhr.send();
 }

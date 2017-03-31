@@ -88,13 +88,19 @@ function createNewLayout(req,res){
       return;
     }
 
-    debug(data);
+    var query = 'select * from layout where lay_name = "'+layName+'";';
 
-    var layout = data;
-
-    res.redirect("/dashboard?layout="+layoutId);
-
-    res.status = 200;
+    queryDB(query,function(err,data){
+      if(err){
+        res.status = 500;
+        return;
+      }
+      layoutId = data[0].lay_id;
+      res.status = 200;
+      debug("Layout added");
+      //res.redirect("/dashboard?layout="+layoutId);
+      res.send();
+    });
   });
 }
 
@@ -159,7 +165,7 @@ function addWidget(req, res) {
   var
   widgetId = req.query.widgetId,
   layoutId = req.query.layoutId;
-  
+
   debug("Widget id: "+widgetId);
   debug("Layout id:"+layoutId);
 
@@ -174,6 +180,7 @@ function addWidget(req, res) {
     res.status = 200;
     debug("Widget added");
     res.redirect("/dashboard?layout="+layoutId);
+    res.send();
   });
 }
 
