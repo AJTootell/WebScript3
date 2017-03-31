@@ -3,8 +3,19 @@ p {
 }
 
 body {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
+  background-color: lightblue;
+}
+
+#hideMe {
+  visibility: visible;
+  left: 1px;
+  top: 1px;
+  position: absolute;
+}
+#hideMe :hover{
+    opacity: 1;
 }
 .weather > table {
   table-layout: fixed;
@@ -38,6 +49,7 @@ section{
   height: 275px;
   display: inline-block;
   position: absolute;
+  background-color: rgba(0,0,255,0.4);
 }
 
 iframe {

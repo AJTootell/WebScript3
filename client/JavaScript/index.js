@@ -166,6 +166,19 @@ function removeWidget(e){
   xhr.send();
 }
 
+function hideHeader(e){
+  var
+  button = document.getElementById('hideMe'),
+  obj = button.parentNode;
+  console.log(obj.style.visibility);
+  if(!(obj.style.visibility == 'hidden')){
+    obj.style.visibility = 'hidden';
+    button.style.opacity = 0.3;
+  }else{
+    button.style.opacity = 1;
+    obj.style.visibility = 'inherit';
+  }
+}
 /*
 ████████ ██     ██ ██ ████████ ████████ ███████ ██████
 ---██    ██     ██ ██    ██       ██    ██      ██   ██
