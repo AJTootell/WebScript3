@@ -23,10 +23,15 @@ app.use(favicon('./client/favicon.ico'));
 app.use(express.static('../client'));
 
 app.get('/styleSheet', index);
-app.get('/index', index);
+app.get('/index', function(req, res) {
+  res.sendFile(path.join(__dirname, '../client/JavaScript','index.js'));
+});
 
-app.get('/dashBoard', util.getHome);
-app.post('/add', util.addWidget);
+app.get('/', util.getLogIn);
+app.get('/dashboard', util.getDashboard);
+app.post('/createNewLayout', util.createNewLayout);
+app.post('/addWidget', util.addWidget);
+app.post('/newWidgetPosition', util.newWidgetPosition);
 app.get('/weather', weather.getWidget);
 
 app.listen(8080);

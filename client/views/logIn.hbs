@@ -1,0 +1,14 @@
+<h1> Select a layout to open </h1>
+<form id="laySelect">
+  <select class="dropDown">
+    <option value="">Layouts</option>
+    {{#each allLayouts}}
+    <option value="{{this.lay_id}}">{{this.lay_name}}</option>
+    {{/each}}
+  </select>
+  <button type="reset" onclick="directToDashboard()">Load</button>
+</form>
+<form>
+  <input type="text" placeholder="Layout name" id="newLayoutName"/>
+  <button type = "reset" onclick="createNewLayout()">Create New Layout</button>
+</form>

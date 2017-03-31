@@ -1,2 +1,0 @@
-update database system to call layout option which returns list of all the widgets and their position
-email to up770605 to request new widget

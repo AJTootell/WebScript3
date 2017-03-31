@@ -1,24 +1,17 @@
-<h1 id='layout{{thisLayout.lay_id}}'>{{thisLayout.lay_name}}</h1>
-<form id="widForm">
-  <select class="dropDown">
-    <option value="">Widgets</option>
+<header>
+  <h1 id='layoutName{{thisLayout.lay_id}}'class = 'layoutName'>{{thisLayout.lay_name}}</h1>
+
+  <select class="dropDown" id='widgetOptions'>
+    <option value="0">Widgets</option>
     {{#each allWidgets}}
       <option value="{{this.wid_id}}">{{this.wid_name}}</option>
     {{/each}}
   </select>
-  <button id="submit" onclick="addWidget()">Add</button>
-</form>
-<form id="layForm">
-  <select class="dropDown">
-    <option value="">Layout</option>
-    {{#each allLayout}}
-      <option value="{{this.lay_id}}">{{this.lay_name}}</option>
-    {{/each}}
-  </select>
-  <button id="submit" onclick="changeLayout()">Update</button>
-</form>
+  <button type="reset" onclick="addWidget()">Add</button>
+</header>
+
 {{#each theseWidgets}}
   <script>
-    populate("{{this.wid_name}}",{{this.laywid_x}},{{this.laywid_y}});
+  populate("{{this.wid_name}}",'widget{{this.laywid_id}}',{{this.laywid_x}},{{this.laywid_y}});
   </script>
 {{/each}}

@@ -1,11 +1,10 @@
 function addWidget(){
-  console.log("Adding a widget");
   var
-  widForm = document.getElementById('widForm'),
-  widget = encodeURIComponent(widForm[0].value),
-  thisLayout = window.body.h1,
-  layout = encodeURIComponent(thisLayout.id),
-  url = '/add?widget="'+widget+'"&layout="'+layout+'"';
+  widOptions = document.getElementById('widgetOptions'),
+  widget = encodeURIComponent(widOptions.value),
+  thisLayout = document.location.search.split('=')[1],
+  layout = encodeURIComponent(thisLayout),
+  url = '/addWidget?widgetId="'+widget+'"&layoutId="'+layout+'"';
 
   console.log(url);
 
@@ -13,30 +12,24 @@ function addWidget(){
 
   xhr.open('POST', url, true);
 
-  xhr.onload = function() {
-    if (xhr.status === 200){
-      console.log('gud connection made');
-    } else{
-      console.log('error inserting new widget');
-    }
-  }
-  console.log('widget added');
+  xhr.onload = function(){
+    location.reload();
+  };
+
   xhr.send();
 }
 
-function changeLayout(){
-
-}
-
-function populate(widget,xPos,yPos){
-
-  console.log("Getting widget: " + widget);
-  switch (widget) {
+function populate(widgetName,widgetId,xPos,yPos){
+  console.log("Getting widget: " + widgetName);
+  switch (widgetName) {
     case 'weather':
+      var
+      weatherWidget,
       today = new Date();
-      weatherWidget = createWeatherMenu(xPos,yPos)
-      document.body.append(weatherWidget);
-      createWeatherWidget(weatherWidget,today.getDay());
+
+      createWidget(widgetName,widgetId,xPos,yPos);
+      createWeatherWidget(widgetId);
+      populateWeatherWidget(widgetId,today.getDay());
       break;
     default:
       console.log("Missing widget: " + widget)
@@ -44,67 +37,110 @@ function populate(widget,xPos,yPos){
   }
 
 }
+
+function directToDashboard(){
+
+  var
+  layout = encodeURIComponent(document.getElementById('laySelect')[0].value),
+  url = '/dashboard?layout=' + layout;
+
+  console.log(url);
+
+  location.href = url;
+
+}
+
+function createWidget(widgetName,widgetId,xPos,yPos){
+  var
+  widget = document.createElement('section');
+
+  widget.classList.add(widgetName);
+  widget.id = widgetId;
+  widget.style = 'left: ' + xPos + "px; \n top: " + yPos + "px;";
+  //weatherWidget.draggable = true;
+  document.body.append(widget);
+
+  widget.addEventListener("mousedown", widgetMoveStarted, false);
+}
+
+function createNewLayout(){
+  var
+  layoutName = document.getElementById("newLayoutName"),
+  url = "/createNewLayout?layoutName="+layoutName,
+  xhr = new XMLHttpRequest();
+
+  console.log(url)
+
+  xhr.open('POST', url, true);
+
+  xhr.send();
+}
 /*
-  ██████  ██████   █████   ██████      ███████ ███    ██  █████  ██████  ██      ███████ ██████
-  ██   ██ ██   ██ ██   ██ ██           ██      ████   ██ ██   ██ ██   ██ ██      ██      ██   ██
-  ██   ██ ██████  ███████ ██   ███     █████   ██ ██  ██ ███████ ██████  ██      █████   ██   ██
-  ██   ██ ██   ██ ██   ██ ██    ██     ██      ██  ██ ██ ██   ██ ██   ██ ██      ██      ██   ██
-  ██████  ██   ██ ██   ██  ██████      ███████ ██   ████ ██   ██ ██████  ███████ ███████ ██████
+██████  ██████   █████   ██████      ███████ ███    ██  █████  ██████  ██      ███████ ██████
+██   ██ ██   ██ ██   ██ ██           ██      ████   ██ ██   ██ ██   ██ ██      ██      ██   ██
+██   ██ ██████  ███████ ██   ███     █████   ██ ██  ██ ███████ ██████  ██      █████   ██   ██
+██   ██ ██   ██ ██   ██ ██    ██     ██      ██  ██ ██ ██   ██ ██   ██ ██      ██      ██   ██
+██████  ██   ██ ██   ██  ██████      ███████ ██   ████ ██   ██ ██████  ███████ ███████ ██████
 */
 
-var widget;
+var eventWidget;
 
 function widgetMoveStarted (e) {
-  widget = e.target;
-  widget.addEventListener("mousemove", moveHandler, true);
+  if(this === e.target){
+    eventWidget = e.currentTarget;
+    eventWidget.addEventListener("mousemove", moveHandler, true);
+    eventWidget.addEventListener("mouseup", widgetDropped, false);
+  }
 }
 
 function widgetDropped (e) {
-  widget.removeEventListener("mousemove", moveHandler, true);
+  eventWidget.removeEventListener("mousemove", moveHandler, true);
+  eventWidget.removeEventListener("mouseup", widgetDropped, false);
+  var
+  url = '/newWidgetPosition?xPos='+(e.pageX-25)+
+  '&yPos='+(e.pageY-25)+
+  '&laywid='+eventWidget.id.slice(6),
+  xhr = new XMLHttpRequest();
+  console.log(url);
+  xhr.open('POST',url,true);
+  xhr.send();
 }
 
 function moveHandler (e) {
   e.preventDefault();
-  //console.log()
-  widget.style.left = e.pageX - 25 + 'px';
-  widget.style.top = e.pageY - 25 + 'px';
-
+  eventWidget.style.left = e.pageX - 25 + 'px';
+  eventWidget.style.top = e.pageY - 25 + 'px';
 }
 
 
 /*
-  ██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
-  ██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-  ██  █  ██ █████   ███████    ██    ███████ █████   ██████
-  ██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
-   ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
+██     ██ ███████  █████  ████████ ██   ██ ███████ ██████
+██     ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+██  █  ██ █████   ███████    ██    ███████ █████   ██████
+██ ███ ██ ██      ██   ██    ██    ██   ██ ██      ██   ██
+ ███ ███  ███████ ██   ██    ██    ██   ██ ███████ ██   ██
 */
-function createWeatherMenu(xPos,yPos){
+
+function createWeatherWidget(widgetId){
+
   var
-  weatherWidget = document.createElement('section'),
-  today = new Date();
-
-  weatherWidget.classList.add('weatherWidget');
-  weatherWidget.style = 'left: ' + yPos + "px; \n top: " + xPos + "px;";
-  //weatherWidget.draggable = true;
-
-  var day = today.getDay();
+  weatherWidget = document.getElementById(widgetId);
+  today = new Date(),
+  day = today.getDay();
 
   for(var i=0;i<6;i++) {
     var d = function(a) {
       return createButton(function(){
-        createWeatherWidget(weatherWidget,day+a);
+        populateWeatherWidget(widgetId,day+a);
       },weatherWidget,dayOfWeekAsString(day+a));
     }(i);
   }
-
-  weatherWidget.addEventListener("mouseup", widgetDropped, false);
-  weatherWidget.addEventListener("mousedown", widgetMoveStarted, false)
-
-  return weatherWidget;
 }
 
-function createWeatherWidget(weatherWidget,day){
+function populateWeatherWidget(widgetId,day){
+
+  var
+  weatherWidget = document.getElementById(widgetId);
   day = day > 6 ? day -7:day;
   var xhr = new XMLHttpRequest();
   xhr.open('GET', '/weather', true);
@@ -142,18 +178,18 @@ function createWeatherWidget(weatherWidget,day){
 }
 
 /*
-  ██    ██ ████████ ██ ██
-  ██    ██    ██    ██ ██
-  ██    ██    ██    ██ ██
-  ██    ██    ██    ██ ██
-   ██████     ██    ██ ███████
+██    ██ ████████ ██ ██
+██    ██    ██    ██ ██
+██    ██    ██    ██ ██
+██    ██    ██    ██ ██
+ ██████     ██    ██ ███████
 */
 
-function createButton(func,section,text){
+function createButton(func,parent,text){
   var button = document.createElement('button');
   button.innerHTML = text;
-  button.addEventListener('click',func)
-  section.append(button);
+  button.addEventListener('click',func);
+  parent.append(button);
 }
 
 function createTable(section,headers){
@@ -202,5 +238,5 @@ function dayOfWeekAsString(dayIndex) {
 }
 
 function capitaliseFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
